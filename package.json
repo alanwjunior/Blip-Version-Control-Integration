@@ -1,0 +1,25 @@
+{
+  "name": "blip-version-control-integration",
+  "version": "1.0.0",
+  "description": "This packages gives you the power to control the chatbot's flows versions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alanwjunior/Blip-Version-Control-Integration.git"
+  },
+  "keywords": [
+    "blip",
+    "version",
+    "control",
+    "github"
+  ],
+  "author": "Alan Wilckay Jr.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alanwjunior/Blip-Version-Control-Integration/issues"
+  },
+  "homepage": "https://github.com/alanwjunior/Blip-Version-Control-Integration#readme"
+}
