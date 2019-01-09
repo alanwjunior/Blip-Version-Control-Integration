@@ -1,4 +1,4 @@
-const BlipService = (blipUserToken) => {
+const newBlipService = (blipUserToken) => {
     const axios = require('axios')
     const guid = require('./../../utils/guid-generator/guid')
     const userToken = blipUserToken
@@ -111,4 +111,4 @@ const BlipService = (blipUserToken) => {
 
 }
 
-module.exports.BlipService = BlipService
+module.exports.newBlipService = newBlipService

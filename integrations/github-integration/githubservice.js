@@ -1,4 +1,4 @@
-const gitHubService = (userCredential, repositoryName, branchName, newCommitMessage) => {
+const newGitHubService = (userCredential, repositoryName, branchName, newCommitMessage) => {
     const axios = require('axios')
     const atob = require('atob')
     const btoa = require('btoa')
@@ -131,4 +131,4 @@ const gitHubService = (userCredential, repositoryName, branchName, newCommitMess
     }
 }
 
-module.exports.gitHubService = gitHubService
+module.exports.newGitHubService = newGitHubService
