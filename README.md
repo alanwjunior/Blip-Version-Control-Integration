@@ -13,7 +13,7 @@ Import the package to your project and use the available methods.
 Initialize your service passing the blip user token:
 ```
 import blipControlVersion from 'blip-version-control-integration'
-const blipIntegrationService = blipControlVersion.blipApi(userToken)
+const blipIntegrationService = blipControlVersion.newBlipService(userToken)
 ```
 #### - getPublishedFlowAsync(botShortName)
 This method returns the bot's published flow as a json. Pass the bot unique name as argument.
@@ -47,7 +47,7 @@ Initialize your service passing four arguments:
 Usage:
 ```
 import blipControlVersion from 'blip-version-control-integration'
-const gitHubIntegrationService = blipControlVersion.blipApi(userCredential, repositoryName, branchName, newCommitMessage)
+const gitHubIntegrationService = blipControlVersion.newGitHubService(userCredential, repositoryName, branchName, newCommitMessage)
 ```
 
 Example:
