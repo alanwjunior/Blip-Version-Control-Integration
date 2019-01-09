@@ -22,7 +22,6 @@ const BlipService = (blipUserToken) => {
             return encodedAuthKey
         }
         catch (error) {
-            console.log(error)
             throw error
         }
     }
@@ -34,7 +33,6 @@ const BlipService = (blipUserToken) => {
             return atob(response.data.accessKey)
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
@@ -51,16 +49,15 @@ const BlipService = (blipUserToken) => {
                 uri: '/buckets/blip_portal:builder_published_flow'
             })
 
-            return response.data
+            return response.data.resource
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
         
     }
 
-    const updateSavedFlow = async (updatedFlow, botShortName) => {
+    const updateSavedFlowAsync = async (updatedFlow, botShortName) => {
         try {
             const botAuthKey = await createBlipAuthorizationTokenAsync(botShortName)
             axios.defaults.headers.common = { 'Authorization': 'Key ' + botAuthKey, 'Content-Type': 'application/json' }
@@ -76,15 +73,39 @@ const BlipService = (blipUserToken) => {
             return response.data
         }
         catch (error) {
-            console.log(error)
+            throw error
+        }   
+    }
+
+    const saveFlowOnGitHubAsync = async (botShortName, githubInfos) => {
+        try {
+            const gitHubAPI = require('./../github-integration/githubservice')
+            const gitHubService = gitHubAPI.gitHubService(githubInfos.userCredential, githubInfos.repositoryName, githubInfos.branchName, githubInfos.newCommitMessage)
+            let botFlow = await getPublishedFlowAsync(botShortName)
+            await gitHubService.publishFile(botShortName + '.json', botFlow)
+        }
+        catch (error) {
             throw error
         }
-        
+    }
+
+    const deployUsingGithubAsync = async (sourceBotShortName, destinyBotShortName, githubInfos) => {
+        try {
+            await saveFlowOnGitHubAsync(sourceBotShortName, githubInfos)
+            await saveFlowOnGitHubAsync(destinyBotShortName, githubInfos)
+            let sourceFlow = await getPublishedFlowAsync(sourceBotShortName)
+            await updateSavedFlowAsync(sourceFlow, destinyBotShortName)
+        }
+        catch (error) {
+            throw error
+        }
     }
 
     return {
         getPublishedFlowAsync: getPublishedFlowAsync,
-        updateSavedFlow: updateSavedFlow,
+        updateSavedFlowAsync: updateSavedFlowAsync,
+        deployUsingGithubAsync: deployUsingGithubAsync,
+        saveFlowOnGitHubAsync: saveFlowOnGitHubAsync,
         userToken: userToken
     }
 

@@ -1,65 +1,69 @@
 const gitHubService = (userCredential, repositoryName, branchName, newCommitMessage) => {
+    const axios = require('axios')
+    const atob = require('atob')
+    const btoa = require('btoa')
     const credential = userCredential
     const repository = repositoryName
     const branch = branchName
     const commitMessage = newCommitMessage
-
-    const axios = require('axios')
-    const atob = require('atob')
-    const btoa = require('btoa')
     const authToken = btoa(userCredential.username + ':' + userCredential.password)
     axios.defaults.headers.common = { 'Authorization': 'Basic ' + authToken }
 
-    const getBranchHead = async () => {
+    const getBranchHeadAsync = async () => {
+        const token = btoa(userCredential.username + ':' + userCredential.password)
+        axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
         try {
             let response = await axios.get('https://api.github.com/repos/' + credential.username + '/' + repositoryName + '/git/refs/heads/' + branchName)
             return response.data
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
 
-    const getLastCommit = async (headUrl) => {
+    const getLastCommitAsync = async (headUrl) => {
+        const token = btoa(userCredential.username + ':' + userCredential.password)
+        axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
         try {
             let response = await axios.get(headUrl)
             return response.data
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
     
-    const createNewFile = async (blob) => {
+    const createNewFileAsync = async (blob) => {
         try {
-            let response = await axios.post('https://api.github.com/repos/alanwjunior/githubintegrationtest/git/blobs', {
-                content: blob,
+            const token = btoa(userCredential.username + ':' + userCredential.password)
+            axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
+            let response = await axios.post('https://api.github.com/repos/' + credential.username + '/' + repository + '/git/blobs', {
+                content: JSON.stringify(blob),
                 encoding: "utf-8|base64"
             })
             return response.data
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
 
-    const getPreviousTree = async (treeURL) => {
+    const getPreviousTreeAsync = async (treeURL) => {
+        const token = btoa(userCredential.username + ':' + userCredential.password)
+        axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
         try {
             let response = await axios.get(treeURL)
             return response.data
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
 
-    const createTree = async (baseTreeSHA, filePath, blobSHA) => {
+    const createTreeAsync = async (baseTreeSHA, filePath, blobSHA) => {
+        const token = btoa(userCredential.username + ':' + userCredential.password)
+        axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
         try {
-            console.log('createTree')
             let response = await axios.post('https://api.github.com/repos/' + credential.username + '/' + repository + '/git/trees', {
                 base_tree: baseTreeSHA,
                 tree: [
@@ -74,12 +78,13 @@ const gitHubService = (userCredential, repositoryName, branchName, newCommitMess
             return response.data
         } 
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
 
-    const commitChange = async (commitMessage, lastCommitSHA, treeSHA) => {
+    const commitChangeAsync = async (commitMessage, lastCommitSHA, treeSHA) => {
+        const token = btoa(userCredential.username + ':' + userCredential.password)
+        axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
         try {
             let response = await axios.post('https://api.github.com/repos/' + credential.username + '/' + repository + '/git/commits', {
                 message: commitMessage,
@@ -89,12 +94,11 @@ const gitHubService = (userCredential, repositoryName, branchName, newCommitMess
             return response.data
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
 
-    const updateHead = async (commitSHA) => {
+    const updateHeadAsync = async (commitSHA) => {
         try {
             await axios.patch('https://api.github.com/repos/' + credential.username + '/' + repository + '/git/refs/heads/' + branchName, {
                 sha: commitSHA,
@@ -102,20 +106,24 @@ const gitHubService = (userCredential, repositoryName, branchName, newCommitMess
               })
         }
         catch (error) {
-            console.log(error.message)
             throw error
         }
     }
 
     const publishFile = async (filePath, fileContent) => {
-        let branchHead = await getBranchHead()
-        let lastCommit = await getLastCommit(branchHead.object.url)
-        let newBlob = await createNewFile(fileContent)
-        let previousTree = await getPreviousTree(lastCommit.tree.url)
-        let newTree = await createTree(previousTree.sha, 'testeGitIntegration.json', newBlob.sha)
-        let commit = await commitChange('Test first automatizated', lastCommit.sha, newTree.sha)
-        await updateHead(commit.sha)
-        console.log('process finished')
+        try{
+            let branchHead = await getBranchHeadAsync()
+            let lastCommit = await getLastCommitAsync(branchHead.object.url)
+            let newBlob = await createNewFileAsync(fileContent)
+            let previousTree = await getPreviousTreeAsync(lastCommit.tree.url)
+            let newTree = await createTreeAsync(previousTree.sha, filePath, newBlob.sha)
+            let commit = await commitChangeAsync('Test first automatizated', lastCommit.sha, newTree.sha)
+            await updateHeadAsync(commit.sha)
+        }
+        catch (error) {
+            throw error
+        }
+        
     }
 
     return {
