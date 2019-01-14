@@ -80,7 +80,7 @@ const newBlipService = (blipUserToken) => {
     const saveFlowOnGitHubAsync = async (botShortName, githubInfos) => {
         try {
             const gitHubAPI = require('./../github-integration/githubservice')
-            const gitHubService = gitHubAPI.gitHubService(githubInfos.userCredential, githubInfos.repositoryName, githubInfos.branchName, githubInfos.newCommitMessage)
+            const gitHubService = gitHubAPI.newGitHubService(githubInfos.userCredential, githubInfos.repositoryName, githubInfos.branchName, githubInfos.newCommitMessage)
             let botFlow = await getPublishedFlowAsync(botShortName)
             await gitHubService.publishFile(botShortName + '.json', botFlow)
         }
