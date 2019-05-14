@@ -61,7 +61,7 @@ const newBlipService = (blipUserToken, blipApiUrl = 'https://api.blip.ai/applica
         try {
             const botAuthKey = await createBlipAuthorizationTokenAsync(botShortName)
             axios.defaults.headers.common = { 'Authorization': 'Key ' + botAuthKey, 'Content-Type': 'application/json' }
-            let response = await axios.post(blipCommandsUrl, {
+            let response = await axios.post(blipCommandsUrl + 'commands', {
                 id: guid.newGuid(),
                 method: 'set',
                 resource: updatedFlow,
