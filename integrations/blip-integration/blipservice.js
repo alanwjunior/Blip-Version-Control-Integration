@@ -1,4 +1,4 @@
-const newBlipService = (blipUserToken) => {
+const newBlipService = (blipUserToken, blipApiUrl = 'https://api.blip.ai/applications/', blipCommandsUrl = 'https://msging.net/') => {
     const axios = require('axios')
     const guid = require('./../../utils/guid-generator/guid')
     const userToken = blipUserToken
@@ -29,7 +29,7 @@ const newBlipService = (blipUserToken) => {
     const getBotAccessKeyAsync = async (botShortName) => {
         try {
             axios.defaults.headers.common = { 'Authorization': 'Token ' + userToken }
-            let response = await axios.get('https://api.blip.ai/applications/' + botShortName)
+            let response = await axios.get(blipApiUrl + botShortName)
             return atob(response.data.accessKey)
         }
         catch (error) {
@@ -43,7 +43,7 @@ const newBlipService = (blipUserToken) => {
         
             axios.defaults.headers.common = { 'Authorization': 'Key ' + botAuthKey, 'Content-Type': 'application/json' }
 
-            let response = await axios.post('https://msging.net/' + 'commands', {
+            let response = await axios.post(blipCommandsUrl + 'commands', {
                 id: guid.newGuid(),
                 method: 'get',
                 uri: '/buckets/blip_portal:builder_published_flow'
@@ -61,7 +61,7 @@ const newBlipService = (blipUserToken) => {
         try {
             const botAuthKey = await createBlipAuthorizationTokenAsync(botShortName)
             axios.defaults.headers.common = { 'Authorization': 'Key ' + botAuthKey, 'Content-Type': 'application/json' }
-            let response = await axios.post('https://msging.net/commands', {
+            let response = await axios.post(blipCommandsUrl, {
                 id: guid.newGuid(),
                 method: 'set',
                 resource: updatedFlow,
@@ -106,7 +106,8 @@ const newBlipService = (blipUserToken) => {
         updateSavedFlowAsync: updateSavedFlowAsync,
         deployUsingGithubAsync: deployUsingGithubAsync,
         saveFlowOnGitHubAsync: saveFlowOnGitHubAsync,
-        userToken: userToken
+        userToken: userToken,
+        createBlipAuthorizationTokenAsync: createBlipAuthorizationTokenAsync
     }
 
 }

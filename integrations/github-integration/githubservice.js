@@ -8,7 +8,7 @@ const newGitHubService = (userCredential, repositoryName, branchName, newCommitM
     const commitMessage = newCommitMessage
     const authToken = btoa(userCredential.username + ':' + userCredential.password)
     axios.defaults.headers.common = { 'Authorization': 'Basic ' + authToken }
-
+    
     const getBranchHeadAsync = async () => {
         const token = btoa(userCredential.username + ':' + userCredential.password)
         axios.defaults.headers.common = { 'Authorization': 'Basic ' + token }
