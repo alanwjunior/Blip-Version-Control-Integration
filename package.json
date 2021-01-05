@@ -24,7 +24,7 @@
   "homepage": "https://github.com/alanwjunior/Blip-Version-Control-Integration#readme",
   "dependencies": {
     "atob": "^2.1.2",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "btoa": "^1.2.1",
     "publish": "^0.6.0"
   }
